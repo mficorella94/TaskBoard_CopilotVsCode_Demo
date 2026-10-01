@@ -65,7 +65,7 @@ else
     private Filter filter = Filter.Tutte;
     private string newTitle = string.Empty;
 
-    private int Remaining => tasks.Count(t => t.IsDone);
+    private int Remaining => tasks.Count(t => !t.IsDone);
 
     private IEnumerable<TaskItem> Visible => filter switch
     {

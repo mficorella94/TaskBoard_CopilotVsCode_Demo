@@ -23,7 +23,7 @@ public class TaskService
     {
         lock (_lock)
         {
-            return _tasks.OrderBy(t => t.Id).ToList();
+            return _tasks.OrderBy(t => t.IsDone).ThenBy(t => t.Id).ToList();
         }
     }
 
@@ -32,12 +32,14 @@ public class TaskService
     /// </summary>
     public TaskItem? Add(string? title)
     {
+        if (string.IsNullOrWhiteSpace(title)) return null;
+
         lock (_lock)
         {
             var task = new TaskItem
             {
                 Id = _nextId++,
-                Title = title?.Trim() ?? string.Empty
+                Title = title.Trim()
             };
             _tasks.Add(task);
             return task;
