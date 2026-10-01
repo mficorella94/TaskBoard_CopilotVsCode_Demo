@@ -1,0 +1,119 @@
+@page "/"
+@rendermode InteractiveServer
+@inject TaskService TaskService
+
+<PageTitle>TaskBoard</PageTitle>
+
+<header class="board-header">
+    <div>
+        <h1>TaskBoard</h1>
+        <p class="subtitle">Le attività del team, in un colpo d'occhio.</p>
+    </div>
+    <p class="counter" aria-live="polite">
+        <span class="counter-number">@Remaining</span>
+        <span class="counter-label">attività rimanenti</span>
+    </p>
+</header>
+
+<section class="composer">
+    <label for="new-task" class="visually-hidden">Nuova attività</label>
+    <input id="new-task"
+           class="composer-input"
+           placeholder="Scrivi un'attività e premi Invio"
+           autocomplete="off"
+           @bind="newTitle"
+           @bind:event="oninput"
+           @onkeydown="OnKeyDown" />
+    <button class="btn-add" @onclick="AddTask">Aggiungi</button>
+</section>
+
+<nav class="filters" aria-label="Filtra le attività">
+    @foreach (var f in Enum.GetValues<Filter>())
+    {
+        <button class="filter @(f == filter ? "is-active" : null)"
+                aria-pressed="@(f == filter)"
+                @onclick="() => filter = f">
+            @Label(f)
+        </button>
+    }
+</nav>
+
+@if (!Visible.Any())
+{
+    <p class="empty">@EmptyMessage</p>
+}
+else
+{
+    <ul class="task-list">
+        @foreach (var task in Visible)
+        {
+            <li class="task @(task.IsDone ? "is-done" : null)" @key="task.Id">
+                <label class="task-check">
+                    <input type="checkbox" checked="@task.IsDone" @onchange="() => Toggle(task.Id)" />
+                    <span class="task-title">@task.Title</span>
+                </label>
+                <button class="btn-delete" aria-label="Elimina @task.Title" title="Elimina" @onclick="() => Delete(task.Id)">×</button>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private enum Filter { Tutte, DaFare, Completate }
+
+    private IReadOnlyList<TaskItem> tasks = Array.Empty<TaskItem>();
+    private Filter filter = Filter.Tutte;
+    private string newTitle = string.Empty;
+
+    private int Remaining => tasks.Count(t => t.IsDone);
+
+    private IEnumerable<TaskItem> Visible => filter switch
+    {
+        Filter.DaFare => tasks.Where(t => !t.IsDone),
+        Filter.Completate => tasks.Where(t => t.IsDone),
+        _ => tasks
+    };
+
+    private string EmptyMessage => filter switch
+    {
+        Filter.DaFare => "Niente da fare. Aggiungi un'attività qui sopra.",
+        Filter.Completate => "Nessuna attività completata per ora.",
+        _ => "La lista è vuota. Scrivi la prima attività qui sopra."
+    };
+
+    private static string Label(Filter f) => f switch
+    {
+        Filter.DaFare => "Da fare",
+        _ => f.ToString()
+    };
+
+    protected override void OnInitialized() => Refresh();
+
+    private void Refresh() => tasks = TaskService.GetAll();
+
+    private void AddTask()
+    {
+        var created = TaskService.Add(newTitle);
+        if (created is null) return;
+
+        newTitle = string.Empty;
+        Refresh();
+    }
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") AddTask();
+    }
+
+    private void Toggle(int id)
+    {
+        TaskService.Toggle(id);
+        Refresh();
+    }
+
+    private void Delete(int id)
+    {
+        TaskService.Delete(id);
+        Refresh();
+    }
+}

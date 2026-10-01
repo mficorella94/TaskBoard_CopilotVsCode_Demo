@@ -1,0 +1,249 @@
+:root {
+    --page: #e6ebf2;
+    --surface: #ffffff;
+    --ink: #1c2740;
+    --muted: #66708a;
+    --line: #cfd6e2;
+    --accent: #f2b134;
+    --danger: #b23a26;
+
+    --font: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --radius-sheet: 14px;
+    --radius-control: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+    background: var(--page);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 1.125rem;
+    line-height: 1.5;
+}
+
+.page {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 3rem 1.25rem 4rem;
+}
+
+/* Header: il contatore è l'elemento che il pubblico deve vedere da lontano */
+.board-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    margin: 0.35rem 0 0;
+    color: var(--muted);
+}
+
+.counter {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    text-align: right;
+}
+
+.counter-number {
+    display: grid;
+    place-items: center;
+    min-width: 4.5rem;
+    height: 4.5rem;
+    padding: 0 0.75rem;
+    border-radius: 999px;
+    background: var(--accent);
+    font-size: 2.25rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.counter-label {
+    max-width: 6.5rem;
+    color: var(--muted);
+    line-height: 1.25;
+    text-align: left;
+}
+
+/* Inserimento */
+.composer {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.composer-input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.8rem 1rem;
+    border: 2px solid var(--line);
+    border-radius: var(--radius-control);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+}
+
+.composer-input:focus { border-color: var(--ink); outline: none; }
+
+button { font: inherit; cursor: pointer; }
+
+.btn-add {
+    padding: 0.8rem 1.25rem;
+    border: 0;
+    border-radius: var(--radius-control);
+    background: var(--ink);
+    color: var(--surface);
+    font-weight: 700;
+}
+
+.btn-add:hover { background: #2c3a5c; }
+
+.btn-add:disabled {
+    background: var(--line);
+    color: var(--muted);
+    cursor: not-allowed;
+}
+
+/* Filtri */
+.filters {
+    display: inline-flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-control);
+    background: #d5dce7;
+}
+
+.filter {
+    padding: 0.4rem 0.9rem;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+}
+
+.filter.is-active {
+    background: var(--surface);
+    color: var(--ink);
+    font-weight: 700;
+}
+
+/* Lista */
+.task-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-radius: var(--radius-sheet);
+    background: var(--surface);
+    border: 1px solid var(--line);
+}
+
+.task {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3.5rem;
+    padding: 0.5rem 0.75rem 0.5rem 1.1rem;
+}
+
+.task + .task { border-top: 1px solid var(--line); }
+
+.task-check {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+}
+
+.task-check input {
+    width: 1.3rem;
+    height: 1.3rem;
+    margin: 0;
+    accent-color: var(--ink);
+    flex-shrink: 0;
+}
+
+.task-title { overflow-wrap: anywhere; }
+
+.task.is-done .task-title {
+    color: var(--muted);
+    text-decoration: line-through;
+}
+
+.btn-delete {
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.btn-delete:hover { background: #f6e3df; color: var(--danger); }
+
+.empty {
+    padding: 2rem 1.25rem;
+    border: 2px dashed var(--line);
+    border-radius: var(--radius-sheet);
+    color: var(--muted);
+    text-align: center;
+}
+
+/* Accessibilità */
+:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+    .page { padding-top: 2rem; }
+    .board-header { flex-direction: column; align-items: flex-start; }
+    h1 { font-size: 2rem; }
+}
+
+/* Barra di errore standard di Blazor */
+#blazor-error-ui {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    background: #fbe9a8;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    position: absolute;
+    right: 1rem;
+    top: 0.5rem;
+    cursor: pointer;
+}

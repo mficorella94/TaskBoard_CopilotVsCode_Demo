@@ -1,0 +1,22 @@
+@host = http://localhost:5080
+
+### Elenco attività
+GET {{host}}/api/tasks
+
+### Crea un'attività valida
+POST {{host}}/api/tasks
+Content-Type: application/json
+
+{ "title": "Scrivere le note della demo" }
+
+### Issue #2: titolo vuoto (atteso 400 Bad Request)
+POST {{host}}/api/tasks
+Content-Type: application/json
+
+{ "title": "   " }
+
+### Completa / riapri l'attività con id 2
+PATCH {{host}}/api/tasks/2/toggle
+
+### Elimina l'attività con id 3
+DELETE {{host}}/api/tasks/3
